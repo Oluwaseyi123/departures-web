@@ -1,11 +1,14 @@
 <template>
-  <div class="home-container">
+  <main class="home-container">
+    <!-- Depatures heading -->
     <div class="header">
-      <img src="../assets/images/Departures.svg" alt="" />
+      <img src="../assets/images/Departures.svg" alt="airplane icon" />
       <h1>Depatures</h1>
     </div>
 
-    <div class="depatures-container">
+    <!-- Table showing all departures -->
+    <section class="depatures-container">
+      
       <ul class="responsive-table">
         <li class="table-header">
           <div class="col col-1">Departure Time</div>
@@ -15,6 +18,8 @@
           <div class="col col-5">Gate</div>
           <div class="col col-6">Status</div>
         </li>
+        <p v-if="isErrorFetchingDeparture">Error Fetching departures</p>
+        <!-- Skeleton loader -->
         <div class="" v-if="isLoading">
           <li
             class="table-row skeleton"
@@ -29,11 +34,11 @@
             <div class="col col-6"></div>
           </li>
         </div>
-
+      
         <li
-          class="table-row"
+          class="table-row" data-test="departures"
           v-else
-          v-for="departure in displayDep"
+          v-for="departure in displayDeparture"
           :key="departure"
           @click="changeStatus(departure)"
         >
@@ -41,7 +46,7 @@
             {{ departure.scheduledDepartureDateTime | convertDateTimetoTime() }}
           </div>
           <div class="col col-2" data-label="City Name">
-            {{ departure.arrivalAirport.cityName }}
+            {{ departure.arrivalAirport.cityName }},  {{ departure.arrivalAirport.countryName }}
           </div>
           <div class="col col-3" data-label="Code">
             {{ departure.airline.code }}
@@ -58,11 +63,13 @@
           </div>
           <div class="col col-5" data-label="Gate" v-else></div>
           <div class="col col-6" data-label="Status">
-            <!-- {{ departure.status | showCorrectStatusColor() }} -->
             {{ showCorrectStatusColor(departure.status) }}
           </div>
         </li>
       </ul>
+
+
+      <!-- Pagination -->
       <div class="pagination">
         <jw-pagination
           :items="departures"
@@ -72,11 +79,15 @@
           :labels="customLabels"
         ></jw-pagination>
       </div>
-    </div>
+    </section>
 
-    <div class="form-container">
+
+    <!-- Update flight section -->
+    <section class="form-container" id="form-container">
+     
       <h1>Update Flight Status</h1>
       <p
+      class="msg-p"
         v-if="notificationMessage !== ''"
         :class="[{ success: isSuccessful }, { error: !isSuccessful }]"
       >
@@ -92,12 +103,12 @@
             <div class="col col-5">Update Status</div>
             <div class="col col-6"></div>
           </li>
-
-          <div class=""  v-if="Object.keys(this.currentFlight).length == 0 ">
+          <!-- Show if object is empty -->
+          <div  v-if="Object.keys(this.currentFlight).length == 0 ">
            <h4>Pick a flight to change status</h4>
           </div>
-
-          <li class="table-row" v-else>
+          <!-- Else -->
+          <li class="table-row update-flight__status" v-else>
             <div class="col col-1" data-label="Departure time">
               {{
                 currentFlight.scheduledDepartureDateTime
@@ -109,7 +120,7 @@
               data-label="City Name"
               v-if="currentFlight.arrivalAirport"
             >
-              {{ currentFlight.arrivalAirport.cityName }}
+              {{ currentFlight.arrivalAirport.cityName }}, {{ currentFlight.arrivalAirport.countryName }}
             </div>
             <div
               class="col col-3"
@@ -136,17 +147,19 @@
                 <option value="Cancelled">Cancelled</option>
               </select>
             </div>
-            <button class="col col-6" @click="updateStatus(currentFlight)">
+            <button class="col col-6 update-btn" @click="updateStatus(currentFlight)">
               Update Status
             </button>
           </li>
         </ul>
       </div>
-    </div>
-  </div>
+    </section>
+  </main>
 </template>
 
 <script>
+
+//styles for pagination library
 const customStyles = {
   ul: {
     display: "flex",
@@ -176,7 +189,7 @@ export default {
   data() {
     return {
       departures: [],
-      displayDep: [],
+      displayDeparture: [],
       statusColor: "",
       isLoading: false,
       isActive: true,
@@ -187,57 +200,70 @@ export default {
       notificationMessage: "",
       notificationColor: "",
       isSuccessful: false,
+      isErrorFetchingDepartures: false
     };
   },
 
   async created() {
     this.isLoading = true;
+
     const res = await fetch(
       "https://6315ae3e5b85ba9b11e4cb85.mockapi.io/departures/Flightdata"
     );
-    const resJSON = await res.json();
-    this.departures = resJSON.allDepartures;
-    this.isLoading = false;
+    if(res.status == 200){
+      const resJSON = await res.json();
+      this.departures = resJSON.allDepartures;
+      this.isLoading = false;
+      this.isErrorFetchingDepartures = false
+    }else{
+      console.error('there has been an error')
+      this.isErrorFetchingDepartures = true
+    }
     this.showCorrectStatusColor();
   },
   computed: {
-    getFirstTwentyDepartures() {
-      return this.departures.slice(0, 10);
-    },
   },
   filters: {
     convertDateTimetoTime(dateTime) {
       let newDate = new Date(dateTime);
       let time = newDate.toLocaleTimeString();
+      time = time.substring(0,time.length-3)
+      time = time.replace(':', '.')
       return time;
     },
   },
 
   methods: {
+    //NTS: write logic for this when you're done
     showCorrectStatusColor(status) {
       if (status.toLocaleLowerCase().includes("final call")) {
         this.statusColor = "pink";
-        //return status
       }
       if (status.toLocaleLowerCase().includes("go to gate")) {
-        //this.statusColor = 'red'
+        this.statusColor = 'red'
       } else if (status.toLocaleLowerCase().includes("departing at")) {
-        // console.log("detarting at");
+        this.statusColor = 'yellow'
       } else {
-        // console.log(status);
+        this.statusColor = 'black'
       }
 
       return status;
     },
 
+    //method handling pagination
     onChangePage(departure) {
-      this.displayDep = departure;
+      this.displayDeparture = departure;
     },
 
+    //this method handles flight selection
     changeStatus(departure) {
       this.currentFlight = departure;
+      const element = document.getElementById('form-container');
+      element.scrollIntoView({ behavior: 'smooth' });
     },
 
+
+    //update status when button is clicked
     updateStatus(flight) {
       if (this.newStatus === "default") {
         this.notificationMessage =
