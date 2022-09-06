@@ -20,7 +20,7 @@
         </li>
         <p v-if="isErrorFetchingDeparture">Error Fetching departures</p>
         <!-- Skeleton loader -->
-        <div class="" v-if="isLoading">
+        <div class="skeleton-container" v-if="isLoading">
           <li
             class="table-row skeleton"
             v-for="departure in 10"
@@ -36,13 +36,13 @@
         </div>
       
         <li
-          class="table-row" data-test="departures"
+          class="table-row test " data-test="departures"
           v-else
           v-for="departure in displayDeparture"
           :key="departure"
           @click="changeStatus(departure)"
         >
-          <div class="col col-1" data-label="Departure time">
+          <div class="col col-1 departure-time" data-label="Departure time">
             {{ departure.scheduledDepartureDateTime | convertDateTimetoTime() }}
           </div>
           <div class="col col-2" data-label="City Name">
@@ -62,8 +62,9 @@
             {{ departure.departureGate.number }}
           </div>
           <div class="col col-5" data-label="Gate" v-else></div>
-          <div class="col col-6" data-label="Status">
-            {{ showCorrectStatusColor(departure.status) }}
+          <div class="col col-6 departure-status" data-label="Status">
+            <!-- {{ showCorrectStatusColor(departure.status) }} -->
+            {{departure.status}}
           </div>
         </li>
       </ul>
@@ -429,7 +430,7 @@ export default {
           //  display: flex;
           padding: 10px 0;
           &:before {
-            color: #6c7a89;
+            color: white;
             padding-right: 10px;
             content: attr(data-label);
             flex-basis: 50%;

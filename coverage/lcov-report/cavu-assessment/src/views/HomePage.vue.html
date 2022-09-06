@@ -531,7 +531,46 @@
 <a name='L466'></a><a href='#L466'>466</a>
 <a name='L467'></a><a href='#L467'>467</a>
 <a name='L468'></a><a href='#L468'>468</a>
-<a name='L469'></a><a href='#L469'>469</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">29x</span>
+<a name='L469'></a><a href='#L469'>469</a>
+<a name='L470'></a><a href='#L470'>470</a>
+<a name='L471'></a><a href='#L471'>471</a>
+<a name='L472'></a><a href='#L472'>472</a>
+<a name='L473'></a><a href='#L473'>473</a>
+<a name='L474'></a><a href='#L474'>474</a>
+<a name='L475'></a><a href='#L475'>475</a>
+<a name='L476'></a><a href='#L476'>476</a>
+<a name='L477'></a><a href='#L477'>477</a>
+<a name='L478'></a><a href='#L478'>478</a>
+<a name='L479'></a><a href='#L479'>479</a>
+<a name='L480'></a><a href='#L480'>480</a>
+<a name='L481'></a><a href='#L481'>481</a>
+<a name='L482'></a><a href='#L482'>482</a>
+<a name='L483'></a><a href='#L483'>483</a>
+<a name='L484'></a><a href='#L484'>484</a>
+<a name='L485'></a><a href='#L485'>485</a>
+<a name='L486'></a><a href='#L486'>486</a>
+<a name='L487'></a><a href='#L487'>487</a>
+<a name='L488'></a><a href='#L488'>488</a>
+<a name='L489'></a><a href='#L489'>489</a>
+<a name='L490'></a><a href='#L490'>490</a>
+<a name='L491'></a><a href='#L491'>491</a>
+<a name='L492'></a><a href='#L492'>492</a>
+<a name='L493'></a><a href='#L493'>493</a>
+<a name='L494'></a><a href='#L494'>494</a>
+<a name='L495'></a><a href='#L495'>495</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">124x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -699,6 +738,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1000,13 +1052,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">&lt;template&gt;
-  &lt;div class="home-container"&gt;
+  &lt;main class="home-container"&gt;
+    &lt;!-- Depatures heading --&gt;
     &lt;div class="header"&gt;
-      &lt;img src="../assets/images/Departures.svg" alt="" /&gt;
+      &lt;img src="../assets/images/Departures.svg" alt="airplane icon" /&gt;
       &lt;h1&gt;Depatures&lt;/h1&gt;
     &lt;/div&gt;
 &nbsp;
-    &lt;div class="depatures-container"&gt;
+    &lt;!-- Table showing all departures --&gt;
+    &lt;section class="depatures-container"&gt;
+      
       &lt;ul class="responsive-table"&gt;
         &lt;li class="table-header"&gt;
           &lt;div class="col col-1"&gt;Departure Time&lt;/div&gt;
@@ -1016,7 +1071,9 @@
           &lt;div class="col col-5"&gt;Gate&lt;/div&gt;
           &lt;div class="col col-6"&gt;Status&lt;/div&gt;
         &lt;/li&gt;
-        &lt;div class="" v-if="isLoading"&gt;
+        &lt;p v-if="isErrorFetchingDeparture"&gt;Error Fetching departures&lt;/p&gt;
+        &lt;!-- Skeleton loader --&gt;
+        &lt;div class="skeleton-container" v-if="isLoading"&gt;
           &lt;li
             class="table-row skeleton"
             v-for="departure in 10"
@@ -1030,19 +1087,19 @@
             &lt;div class="col col-6"&gt;&lt;/div&gt;
           &lt;/li&gt;
         &lt;/div&gt;
-&nbsp;
+      
         &lt;li
-          class="table-row" data-test="departures"
+          class="table-row test " data-test="departures"
           v-else
           v-for="departure in displayDeparture"
           :key="departure"
           @click="changeStatus(departure)"
         &gt;
-          &lt;div class="col col-1" data-label="Departure time"&gt;
+          &lt;div class="col col-1 departure-time" data-label="Departure time"&gt;
             {{ departure.scheduledDepartureDateTime | convertDateTimetoTime() }}
           &lt;/div&gt;
           &lt;div class="col col-2" data-label="City Name"&gt;
-            {{ departure.arrivalAirport.cityName }}
+            {{ departure.arrivalAirport.cityName }},  {{ departure.arrivalAirport.countryName }}
           &lt;/div&gt;
           &lt;div class="col col-3" data-label="Code"&gt;
             {{ departure.airline.code }}
@@ -1058,12 +1115,15 @@
             {{ departure.departureGate.number }}
           &lt;/div&gt;
           &lt;div class="col col-5" data-label="Gate" v-else&gt;&lt;/div&gt;
-          &lt;div class="col col-6" data-label="Status"&gt;
-            &lt;!-- {{ departure.status | showCorrectStatusColor() }} --&gt;
-            {{ showCorrectStatusColor(departure.status) }}
+          &lt;div class="col col-6 departure-status" data-label="Status"&gt;
+            &lt;!-- {{ showCorrectStatusColor(departure.status) }} --&gt;
+            {{departure.status}}
           &lt;/div&gt;
         &lt;/li&gt;
       &lt;/ul&gt;
+&nbsp;
+&nbsp;
+      &lt;!-- Pagination --&gt;
       &lt;div class="pagination"&gt;
         &lt;jw-pagination
           :items="departures"
@@ -1073,9 +1133,12 @@
           :labels="customLabels"
         &gt;&lt;/jw-pagination&gt;
       &lt;/div&gt;
-    &lt;/div&gt;
+    &lt;/section&gt;
 &nbsp;
-    &lt;div class="form-container"&gt;
+&nbsp;
+    &lt;!-- Update flight section --&gt;
+    &lt;section class="form-container" id="form-container"&gt;
+     
       &lt;h1&gt;Update Flight Status&lt;/h1&gt;
       &lt;p
       class="msg-p"
@@ -1094,11 +1157,11 @@
             &lt;div class="col col-5"&gt;Update Status&lt;/div&gt;
             &lt;div class="col col-6"&gt;&lt;/div&gt;
           &lt;/li&gt;
-&nbsp;
-          &lt;div class=""  v-if="Object.keys(this.currentFlight).length == 0 "&gt;
+          &lt;!-- Show if object is empty --&gt;
+          &lt;div  v-if="Object.keys(this.currentFlight).length == 0 "&gt;
            &lt;h4&gt;Pick a flight to change status&lt;/h4&gt;
           &lt;/div&gt;
-&nbsp;
+          &lt;!-- Else --&gt;
           &lt;li class="table-row update-flight__status" v-else&gt;
             &lt;div class="col col-1" data-label="Departure time"&gt;
               {{
@@ -1111,7 +1174,7 @@
               data-label="City Name"
               v-if="currentFlight.arrivalAirport"
             &gt;
-              {{ currentFlight.arrivalAirport.cityName }}
+              {{ currentFlight.arrivalAirport.cityName }}, {{ currentFlight.arrivalAirport.countryName }}
             &lt;/div&gt;
             &lt;div
               class="col col-3"
@@ -1144,11 +1207,13 @@
           &lt;/li&gt;
         &lt;/ul&gt;
       &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+    &lt;/section&gt;
+  &lt;/main&gt;
 &lt;/template&gt;
 &nbsp;
 &lt;script&gt;
+&nbsp;
+//styles for pagination library
 const customStyles = {
   ul: {
     display: "flex",
@@ -1189,57 +1254,70 @@ export default {
       notificationMessage: "",
       notificationColor: "",
       isSuccessful: false,
+      isErrorFetchingDepartures: false
     };
   },
 &nbsp;
   async created() {
     this.isLoading = true;
+&nbsp;
     const res = await fetch(
       "https://6315ae3e5b85ba9b11e4cb85.mockapi.io/departures/Flightdata"
     );
-    const resJSON = await res.json();
-    this.departures = resJSON.allDepartures;
-    this.isLoading = false;
+    if(res.status == 200){
+      const resJSON = await res.json();
+      this.departures = resJSON.allDepartures;
+      this.isLoading = false;
+      this.isErrorFetchingDepartures = false
+    }else{
+      console.error('there has been an error')
+      this.isErrorFetchingDepartures = true
+    }
     this.showCorrectStatusColor();
   },
   computed: {
-    getFirstTwentyDepartures() {
-      return this.departures.slice(0, 10);
-    },
   },
   filters: {
     convertDateTimetoTime(dateTime) {
       let newDate = new Date(dateTime);
       let time = newDate.toLocaleTimeString();
+      time = time.substring(0,time.length-3)
+      time = time.replace(':', '.')
       return time;
     },
   },
 &nbsp;
   methods: {
+    //NTS: write logic for this when you're done
     showCorrectStatusColor(status) {
       if (status.toLocaleLowerCase().includes("final call")) {
         this.statusColor = "pink";
-        //return status
       }
       if (status.toLocaleLowerCase().includes("go to gate")) {
-        //this.statusColor = 'red'
+        this.statusColor = 'red'
       } else if (status.toLocaleLowerCase().includes("departing at")) {
-        // console.log("detarting at");
+        this.statusColor = 'yellow'
       } else {
-        // console.log(status);
+        this.statusColor = 'black'
       }
 &nbsp;
       return status;
     },
 &nbsp;
+    //method handling pagination
     onChangePage(departure) {
       this.displayDeparture = departure;
     },
 &nbsp;
+    //this method handles flight selection
     changeStatus(departure) {
       this.currentFlight = departure;
+      const element = document.getElementById('form-container');
+      element.scrollIntoView({ behavior: 'smooth' });
     },
 &nbsp;
+&nbsp;
+    //update status when button is clicked
     updateStatus(flight) {
       if (this.newStatus === "default") {
         this.notificationMessage =
@@ -1405,7 +1483,7 @@ export default {
           //  display: flex;
           padding: 10px 0;
           &amp;:before {
-            color: #6c7a89;
+            color: white;
             padding-right: 10px;
             content: attr(data-label);
             flex-basis: 50%;
@@ -1474,7 +1552,7 @@ export default {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2022-09-06T17:28:06.305Z
+                at 2022-09-06T22:44:31.525Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
