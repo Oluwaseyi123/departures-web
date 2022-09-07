@@ -218,8 +218,10 @@ export default {
       this.isErrorFetchingDepartures = false
     }else{
       console.error('there has been an error')
+      this.isLoading = false
       this.isErrorFetchingDepartures = true
     }
+
     this.showCorrectStatusColor();
   },
   computed: {

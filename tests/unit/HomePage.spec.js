@@ -17,7 +17,7 @@ describe('Homepage.vue', () => {
     wrapper = mountComponent()
   })
 
-//okay
+
  it('renders', () => {
   expect(wrapper.get('.home-container').exists()).toBeTruthy()
  })
@@ -78,7 +78,7 @@ describe('Homepage.vue', () => {
   expect(wrapper.get('button').exists()).toBeTruthy()
  })
 
- //okay
+
  it('shows a nessage when update status button is clicked', async () => {
   await wrapper.setData({
    currentFlight: {
