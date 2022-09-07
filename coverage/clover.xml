@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1662504271577" clover="3.2.0">
-  <project timestamp="1662504271577" name="All files">
-    <metrics statements="133" coveredstatements="4" conditionals="331" coveredconditionals="2" methods="57" coveredmethods="1" elements="521" coveredelements="7" complexity="0" loc="133" ncloc="133" packages="5" files="10" classes="10"/>
+<coverage generated="1662541896781" clover="3.2.0">
+  <project timestamp="1662541896781" name="All files">
+    <metrics statements="133" coveredstatements="5" conditionals="331" coveredconditionals="2" methods="57" coveredmethods="2" elements="521" coveredelements="9" complexity="0" loc="133" ncloc="133" packages="5" files="10" classes="10"/>
     <package name="cavu-assessment">
       <metrics statements="4" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <file name="babel.config.js" path="/Users/oluwaseyiaimudo/Sites/cavu/cavu-assessment/babel.config.js">
@@ -151,10 +151,10 @@
       </file>
     </package>
     <package name="cavu-assessment.src">
-      <metrics statements="5" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
+      <metrics statements="5" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
       <file name="App.vue" path="/Users/oluwaseyiaimudo/Sites/cavu/cavu-assessment/src/App.vue">
-        <metrics statements="1" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
-        <line num="1" count="0" type="stmt"/>
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="6" type="stmt"/>
       </file>
       <file name="main.js" path="/Users/oluwaseyiaimudo/Sites/cavu/cavu-assessment/src/main.js">
         <metrics statements="4" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
@@ -175,9 +175,9 @@
       <metrics statements="3" coveredstatements="3" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
       <file name="HomePage.vue" path="/Users/oluwaseyiaimudo/Sites/cavu/cavu-assessment/src/views/HomePage.vue">
         <metrics statements="3" coveredstatements="3" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
-        <line num="1" count="124" type="cond" truecount="2" falsecount="0"/>
-        <line num="164" count="1" type="stmt"/>
-        <line num="181" count="1" type="stmt"/>
+        <line num="1" count="140" type="cond" truecount="2" falsecount="0"/>
+        <line num="164" count="2" type="stmt"/>
+        <line num="181" count="2" type="stmt"/>
       </file>
     </package>
   </project>

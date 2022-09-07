@@ -20,7 +20,7 @@
         </li>
         <p v-if="isErrorFetchingDeparture">Error Fetching departures</p>
         <!-- Skeleton loader -->
-        <div class="skeleton-container" v-if="isLoading">
+        <div class="skeleton-container" v-if="isLoading && departures.length === 0">
           <li
             class="table-row skeleton"
             v-for="departure in 10"
