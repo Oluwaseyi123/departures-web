@@ -36,7 +36,7 @@ If I were to take this project further, I would:
 - persist status to localStorage - Get updated status on page refresh
 - handle the logic for what happens when the plane is diverted
 - write test for pagination
-
+- I would use the Vue-Webpack proxy workaround to proxy and bypass the CORS errors on dev and netlify redirect to bypass it on the live version.
 ### External Packages
 ```
 1. Pagination - https://www.npmjs.com/package/jw-vue-pagination 
