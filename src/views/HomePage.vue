@@ -8,7 +8,6 @@
 
     <!-- Table showing all departures -->
     <section class="depatures-container">
-      
       <ul class="responsive-table">
         <li class="table-header">
           <div class="col col-1">Departure Time</div>
@@ -20,7 +19,10 @@
         </li>
         <p v-if="isErrorFetchingDeparture">Error Fetching departures</p>
         <!-- Skeleton loader -->
-        <div class="skeleton-container" v-if="isLoading && departures.length === 0">
+        <div
+          class="skeleton-container"
+          v-if="isLoading && departures.length === 0"
+        >
           <li
             class="table-row skeleton"
             v-for="departure in 10"
@@ -34,9 +36,10 @@
             <div class="col col-6"></div>
           </li>
         </div>
-      
+
         <li
-          class="table-row test " data-test="departures"
+          class="table-row test"
+          data-test="departures"
           v-else
           v-for="departure in displayDeparture"
           :key="departure"
@@ -46,7 +49,8 @@
             {{ departure.scheduledDepartureDateTime | convertDateTimetoTime() }}
           </div>
           <div class="col col-2" data-label="City Name">
-            {{ departure.arrivalAirport.cityName }},  {{ departure.arrivalAirport.countryName }}
+            {{ departure.arrivalAirport.cityName }},
+            {{ departure.arrivalAirport.countryName }}
           </div>
           <div class="col col-3" data-label="Code">
             {{ departure.airline.code }}
@@ -64,11 +68,10 @@
           <div class="col col-5" data-label="Gate" v-else></div>
           <div class="col col-6 departure-status" data-label="Status">
             <!-- {{ showCorrectStatusColor(departure.status) }} -->
-            {{departure.status}}
+            {{ departure.status }}
           </div>
         </li>
       </ul>
-
 
       <!-- Pagination -->
       <div class="pagination">
@@ -82,17 +85,15 @@
       </div>
     </section>
 
-
     <!-- Update flight section -->
     <section class="form-container" id="form-container">
-     
       <h1>Update Flight Status</h1>
       <p
-      class="msg-p"
-        v-if="notificationMessage !== ''"
+        class="msg-p"
+        v-if="notificationMsg !== ''"
         :class="[{ success: isSuccessful }, { error: !isSuccessful }]"
       >
-        {{ notificationMessage }}
+        {{ notificationMsg }}
       </p>
       <div class="depatures-container">
         <ul class="responsive-table">
@@ -105,8 +106,8 @@
             <div class="col col-6"></div>
           </li>
           <!-- Show if object is empty -->
-          <div  v-if="Object.keys(this.currentFlight).length == 0 ">
-           <h4>Pick a flight to change status</h4>
+          <div v-if="Object.keys(this.currentFlight).length == 0">
+            <h4>Pick a flight to change status</h4>
           </div>
           <!-- Else -->
           <li class="table-row update-flight__status" v-else>
@@ -121,7 +122,8 @@
               data-label="City Name"
               v-if="currentFlight.arrivalAirport"
             >
-              {{ currentFlight.arrivalAirport.cityName }}, {{ currentFlight.arrivalAirport.countryName }}
+              {{ currentFlight.arrivalAirport.cityName }},
+              {{ currentFlight.arrivalAirport.countryName }}
             </div>
             <div
               class="col col-3"
@@ -146,9 +148,21 @@
                 <option value="Diverted">Diverted</option>
                 <option value="Delayed">Delayed</option>
                 <option value="Cancelled">Cancelled</option>
+                <option value="Other">Other</option>
               </select>
+
+              <input
+                type="text"
+                name="othername"
+                v-model="newStatusInput"
+                v-if="newStatus === 'Other'"
+                placeholder="Enter flight status"
+              />
             </div>
-            <button class="col col-6 update-btn" @click="updateStatus(currentFlight)">
+            <button
+              class="col col-6 update-btn"
+              @click="updateStatus(currentFlight)"
+            >
               Update Status
             </button>
           </li>
@@ -159,7 +173,6 @@
 </template>
 
 <script>
-
 //styles for pagination library
 const customStyles = {
   ul: {
@@ -198,10 +211,10 @@ export default {
       customLabels,
       currentFlight: {},
       newStatus: "default",
-      notificationMessage: "",
-      notificationColor: "",
+      newStatusInput: "",
+      notificationMsg: "",
       isSuccessful: false,
-      isErrorFetchingDepartures: false
+      isErrorFetchingDepartures: false,
     };
   },
 
@@ -211,27 +224,26 @@ export default {
     const res = await fetch(
       "https://6315ae3e5b85ba9b11e4cb85.mockapi.io/departures/Flightdata"
     );
-    if(res.status == 200){
+    if (res.status == 200) {
       const resJSON = await res.json();
       this.departures = resJSON.allDepartures;
       this.isLoading = false;
-      this.isErrorFetchingDepartures = false
-    }else{
-      console.error('there has been an error')
-      this.isLoading = false
-      this.isErrorFetchingDepartures = true
+      this.isErrorFetchingDepartures = false;
+    } else {
+      console.error("there has been an error");
+      this.isLoading = false;
+      this.isErrorFetchingDepartures = true;
     }
 
     this.showCorrectStatusColor();
   },
-  computed: {
-  },
+  computed: {},
   filters: {
     convertDateTimetoTime(dateTime) {
       let newDate = new Date(dateTime);
       let time = newDate.toLocaleTimeString();
-      time = time.substring(0,time.length-3)
-      time = time.replace(':', '.')
+      time = time.substring(0, time.length - 3);
+      time = time.replace(":", ".");
       return time;
     },
   },
@@ -243,11 +255,11 @@ export default {
         this.statusColor = "pink";
       }
       if (status.toLocaleLowerCase().includes("go to gate")) {
-        this.statusColor = 'red'
+        this.statusColor = "red";
       } else if (status.toLocaleLowerCase().includes("departing at")) {
-        this.statusColor = 'yellow'
+        this.statusColor = "yellow";
       } else {
-        this.statusColor = 'black'
+        this.statusColor = "black";
       }
 
       return status;
@@ -261,30 +273,45 @@ export default {
     //this method handles flight selection
     changeStatus(departure) {
       this.currentFlight = departure;
-      const element = document.getElementById('form-container');
-      element.scrollIntoView({ behavior: 'smooth' });
+      const element = document.getElementById("form-container");
+      element.scrollIntoView({ behavior: "smooth" });
     },
-
 
     //update status when button is clicked
     updateStatus(flight) {
-      if (this.newStatus === "default") {
-        this.notificationMessage =
-          "Error updating flight status. Please pick a correct status";
-        this.isSuccessful = false;
-        setTimeout(() => {
-          this.notificationMessage = "";
-        }, 3000);
-      } else {
-        flight.status = this.newStatus;
-        this.notificationMessage = "Flight status updated";
-        this.notificationColor = "green";
-        this.isSuccessful = true;
+      switch (this.newStatus) {
+        //if the default is picked
+        case "default":
+          this.notificationMsg =
+            "Error updating flight status. Please pick a correct status";
+          this.isSuccessful = false;
+         this.clearMsg()
+          break;
 
-        setTimeout(() => {
-          this.notificationMessage = "";
-        }, 3000);
+        //if Other is picked
+        case "Other":
+          flight.status = this.newStatusInput;
+          this.notificationMsg = "Flight status updated";
+          this.isSuccessful = true;
+          this.clearMsg()
+          break;
+
+          //else
+        default:
+          flight.status = this.newStatus;
+          this.notificationMsg = "Flight status updated";
+          this.isSuccessful = true;
+
+          this.clearMsg()
       }
+    },
+
+
+    //logic to clear message after 3 seconds
+    clearMsg() {
+      setTimeout(() => {
+        this.notificationMsg = "";
+      }, 3000);
     },
   },
 };
@@ -362,7 +389,7 @@ export default {
         cursor: pointer;
         border: 2px solid #ffffff;
         box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
-        color: white;
+        color: #ffffff;
         text-align: left;
         font-weight: 700;
         [data-label="City Name"],
@@ -370,8 +397,8 @@ export default {
           color: #f5d836;
         }
         [data-label="Status"] {
-          background-color: white;
-          color: black;
+          background-color: #ffffff;
+          color: #000000;
           display: flex;
           align-items: center;
           padding: 10px 10px 10px 15px;
@@ -453,17 +480,16 @@ export default {
   }
 
   .form-container {
-    // background-color: white;
     margin-top: 3em;
     padding: 20px 0px;
     h1,
     p {
       padding: 0 30px;
-      color: white;
+      color: #ffffff;
     }
     p {
       // background-color: pink;
-      color: black;
+      color: #000000;
       font-weight: 700;
       width: 100%;
       max-width: 700px;
@@ -488,8 +514,18 @@ export default {
       padding: 5px;
       color: white;
     }
-    h4{
-      color: white;
+    input {
+      border: none;
+      border-bottom: 1px solid #dfc42e;
+      outline: none;
+      display: block;
+      background-color: transparent;
+      color: #ffffff;
+      margin-top: 10px;
+      padding: 5px;
+    }
+    h4 {
+      color: #ffffff;
     }
   }
 }
