@@ -1,4 +1,4 @@
-import { shallowMount, mount, flushPromises } from "@vue/test-utils";
+import { shallowMount } from "@vue/test-utils";
 import { departures } from "@/helpers/departures";
 import HomePage from '@/views/HomePage.vue'
 
