@@ -281,6 +281,7 @@ export default {
 
   .wait-in-lounge{
     background-color: pink;
+    color: #000000;
   }
   .scheduled{
     background-color: #1EA945;
