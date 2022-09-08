@@ -286,9 +286,7 @@ export default {
 
 .home-container {
   display: flex;
-  justify-content: center;
   flex-direction: column;
-  height: auto;
   background: linear-gradient(90deg, #464646 0%, #000000 100%);
   width: 90%;
   max-width: 1200px;
@@ -339,7 +337,6 @@ export default {
         padding: 25px 30px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
         margin-bottom: 25px;
       }
       .table-header {
@@ -374,7 +371,6 @@ export default {
             height: 100%;
             position: absolute;
             left: 0;
-           
           }
         }
         button {
@@ -387,21 +383,11 @@ export default {
           cursor: pointer;
         }
       }
-      .col-1 {
-        flex-basis: 17%;
-      }
-      .col-2 {
-        flex-basis: 17%;
-      }
-      .col-3 {
-        flex-basis: 17%;
-      }
-      .col-4 {
-        flex-basis: 17%;
-      }
-      .col-5 {
-        flex-basis: 17%;
-      }
+      .col-1,
+      .col-2, 
+      .col-3, 
+      .col-4, 
+      .col-5, 
       .col-6 {
         flex-basis: 17%;
       }
@@ -413,16 +399,13 @@ export default {
         li {
           display: block;
         }
-        .col {
-          flex-basis: 100%;
-        }
+    
         .col {
           padding: 10px 0;
           &:before {
             color: white;
             padding-right: 10px;
             content: attr(data-label);
-            flex-basis: 50%;
             text-align: right;
           }
         }
