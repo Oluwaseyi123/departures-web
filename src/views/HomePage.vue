@@ -1,14 +1,11 @@
 <template>
   <main class="home-container">
-    <!-- Depatures heading -->
     <div class="header">
       <img src="../assets/images/Departures.svg" alt="airplane icon" />
       <h1>Depatures</h1>
     </div>
 
-    <!-- Table showing all departures -->
     <section class="depatures-container">
-      
       <ul class="responsive-table">
         <li class="table-header">
           <div class="col col-1">Departure Time</div>
@@ -18,35 +15,26 @@
           <div class="col col-5">Gate</div>
           <div class="col col-6">Status</div>
         </li>
+
         <p v-if="isErrorFetchingDeparture">Error Fetching departures</p>
-        <!-- Skeleton loader -->
-        <div class="" v-if="isLoading">
+        <template v-if="isLoading && departures.length === 0">
+          <skeleton-loader></skeleton-loader>
+        </template>
+
+        <template v-else>
           <li
-            class="table-row skeleton"
-            v-for="departure in 10"
-            :key="departure"
-          >
-            <div class="col col-1" data-label="Departure time"></div>
-            <div class="col col-2" data-label="City Name"></div>
-            <div class="col col-3" data-label="Code"></div>
-            <div class="col col-4" data-label="Airline"></div>
-            <div class="col col-5" data-label="Gate"></div>
-            <div class="col col-6"></div>
-          </li>
-        </div>
-      
-        <li
-          class="table-row" data-test="departures"
-          v-else
+          class="table-row test"
+          data-test="departures"
           v-for="departure in displayDeparture"
           :key="departure"
           @click="changeStatus(departure)"
         >
-          <div class="col col-1" data-label="Departure time">
+          <div class="col col-1 departure-time" data-label="Departure time">
             {{ departure.scheduledDepartureDateTime | convertDateTimetoTime() }}
           </div>
           <div class="col col-2" data-label="City Name">
-            {{ departure.arrivalAirport.cityName }},  {{ departure.arrivalAirport.countryName }}
+            {{ departure.arrivalAirport.cityName }},
+            {{ departure.arrivalAirport.countryName }}
           </div>
           <div class="col col-3" data-label="Code">
             {{ departure.airline.code }}
@@ -62,14 +50,18 @@
             {{ departure.departureGate.number }}
           </div>
           <div class="col col-5" data-label="Gate" v-else></div>
-          <div class="col col-6" data-label="Status">
-            {{ showCorrectStatusColor(departure.status) }}
+          <div class="col col-6 departure-status" data-label="Status" >
+          
+            <div
+              class="color-container"
+              :class="showStatusColor(departure.status)"
+            ></div>
+            <p :class="showStatusColor(departure.status)" >{{ departure.status }}</p>
           </div>
         </li>
+        </template>
       </ul>
 
-
-      <!-- Pagination -->
       <div class="pagination">
         <jw-pagination
           :items="departures"
@@ -81,17 +73,14 @@
       </div>
     </section>
 
-
-    <!-- Update flight section -->
     <section class="form-container" id="form-container">
-     
       <h1>Update Flight Status</h1>
       <p
-      class="msg-p"
-        v-if="notificationMessage !== ''"
+        class="msg-p"
+        v-if="notificationMsg !== ''"
         :class="[{ success: isSuccessful }, { error: !isSuccessful }]"
       >
-        {{ notificationMessage }}
+        {{ notificationMsg }}
       </p>
       <div class="depatures-container">
         <ul class="responsive-table">
@@ -103,30 +92,19 @@
             <div class="col col-5">Update Status</div>
             <div class="col col-6"></div>
           </li>
-          <!-- Show if object is empty -->
-          <div  v-if="Object.keys(this.currentFlight).length == 0 ">
-           <h4>Pick a flight to change status</h4>
-          </div>
-          <!-- Else -->
-          <li class="table-row update-flight__status" v-else>
+          <li class="change-status" v-if="Object.keys(this.currentFlight).length === 0">
+            Pick a flight to change status
+          </li>
+          <template v-else>
+            <li class="table-row update-flight__status">
             <div class="col col-1" data-label="Departure time">
-              {{
-                currentFlight.scheduledDepartureDateTime
-                  | convertDateTimetoTime()
-              }}
+              {{ currentFlight.scheduledDepartureDateTime | convertDateTimetoTime() }}
             </div>
-            <div
-              class="col col-2"
-              data-label="City Name"
-              v-if="currentFlight.arrivalAirport"
-            >
-              {{ currentFlight.arrivalAirport.cityName }}, {{ currentFlight.arrivalAirport.countryName }}
+            <div class="col col-2"  data-label="City Name"  v-if="currentFlight.arrivalAirport">
+              {{ currentFlight.arrivalAirport.cityName }},
+              {{ currentFlight.arrivalAirport.countryName }}
             </div>
-            <div
-              class="col col-3"
-              data-label="Airline"
-              v-if="currentFlight.airline"
-            >
+            <div class="col col-3" data-label="Airline" v-if="currentFlight.airline" >
               {{ currentFlight.airline.name }}
             </div>
 
@@ -135,22 +113,18 @@
             </div>
 
             <div class="col col-5" data-label="Update Status">
-              <select
-                name="update-status"
-                id="update-status"
-                v-model="newStatus"
-              >
-                <option value="default" default>New Status</option>
-                <option value="Departed">Departed</option>
-                <option value="Diverted">Diverted</option>
-                <option value="Delayed">Delayed</option>
-                <option value="Cancelled">Cancelled</option>
+              <select name="update-status" id="update-status"  v-model="newStatus" >
+                <option value="default" disabled selected hidden>New Status</option>
+                <option  v-for="option in options" :key="option" :value="option">{{option}}</option>
               </select>
+              <input type="text" name="othername" v-model="newStatusInput" v-if="newStatus === 'Other'" placeholder="Enter flight status"/>
             </div>
             <button class="col col-6 update-btn" @click="updateStatus(currentFlight)">
               Update Status
             </button>
           </li>
+          </template>
+         
         </ul>
       </div>
     </section>
@@ -158,8 +132,8 @@
 </template>
 
 <script>
+import SkeletonLoader from '@/components/SkeletonLoader.vue';
 
-//styles for pagination library
 const customStyles = {
   ul: {
     display: "flex",
@@ -185,132 +159,146 @@ const customLabels = {
 };
 
 export default {
+  
   name: "HomePage",
+  components: { SkeletonLoader },
   data() {
     return {
       departures: [],
       displayDeparture: [],
-      statusColor: "",
       isLoading: false,
-      isActive: true,
       customStyles,
       customLabels,
       currentFlight: {},
-      newStatus: "default",
-      notificationMessage: "",
-      notificationColor: "",
+      newStatus:'default',
+      newStatusInput: '',
+      notificationMsg: '',
       isSuccessful: false,
-      isErrorFetchingDepartures: false
+      isErrorFetchingDepartures: false,
+      options: ['Departed','Diverted','Delayed', 'Cancelled', 'Other'],
+      reds: ['final', 'diverted', 'cancelled', 'delayed', 'hijacked']
     };
   },
 
   async created() {
     this.isLoading = true;
-
-    const res = await fetch(
-      "https://6315ae3e5b85ba9b11e4cb85.mockapi.io/departures/Flightdata"
-    );
-    if(res.status == 200){
+    const res = await fetch("https://6315ae3e5b85ba9b11e4cb85.mockapi.io/departures/Flightdata");
+    if (res.status === 200) {
       const resJSON = await res.json();
       this.departures = resJSON.allDepartures;
       this.isLoading = false;
-      this.isErrorFetchingDepartures = false
-    }else{
-      console.error('there has been an error')
-      this.isErrorFetchingDepartures = true
+      this.isErrorFetchingDepartures = false;
+    } else {
+      this.isLoading = false;
+      this.isErrorFetchingDepartures = true;
     }
-    this.showCorrectStatusColor();
   },
-  computed: {
-  },
+
   filters: {
     convertDateTimetoTime(dateTime) {
       let newDate = new Date(dateTime);
       let time = newDate.toLocaleTimeString();
-      time = time.substring(0,time.length-3)
-      time = time.replace(':', '.')
+      time = time.substring(0, time.length - 3);
+      time = time.replace(":", ".");
       return time;
     },
   },
 
   methods: {
-    //NTS: write logic for this when you're done
-    showCorrectStatusColor(status) {
-      if (status.toLocaleLowerCase().includes("final call")) {
-        this.statusColor = "pink";
+    showStatusColor(status){
+      if (status.toLocaleLowerCase().includes('departed') ) {
+        return 'departed'
+      }else if (status.toLocaleLowerCase().includes('departing')) {
+        return 'departing'
+      }else if (this.reds.some(red => status.toLocaleLowerCase().includes(red))) {
+        return 'final'
+      }else if (status.toLocaleLowerCase().includes('go to gate')) {
+        return 'go-to-gate'
+      }else if (status.toLocaleLowerCase().includes('wait')) {
+        return 'wait-in-lounge'
+      }else if (status.toLocaleLowerCase().includes('scheduled')) {
+        return 'scheduled'
+      }else {
+        return 'extra'
       }
-      if (status.toLocaleLowerCase().includes("go to gate")) {
-        this.statusColor = 'red'
-      } else if (status.toLocaleLowerCase().includes("departing at")) {
-        this.statusColor = 'yellow'
-      } else {
-        this.statusColor = 'black'
-      }
-
-      return status;
     },
 
-    //method handling pagination
     onChangePage(departure) {
       this.displayDeparture = departure;
     },
 
-    //this method handles flight selection
     changeStatus(departure) {
       this.currentFlight = departure;
-      const element = document.getElementById('form-container');
-      element.scrollIntoView({ behavior: 'smooth' });
+      const element = document.getElementById("form-container");
+      element.scrollIntoView({ behavior: "smooth" });
     },
 
-
-    //update status when button is clicked
     updateStatus(flight) {
-      if (this.newStatus === "default") {
-        this.notificationMessage =
-          "Error updating flight status. Please pick a correct status";
-        this.isSuccessful = false;
-        setTimeout(() => {
-          this.notificationMessage = "";
-        }, 3000);
-      } else {
-        flight.status = this.newStatus;
-        this.notificationMessage = "Flight status updated";
-        this.notificationColor = "green";
-        this.isSuccessful = true;
+      switch (this.newStatus) {
+        case "default":
+          this.clearMsg(false, 'Error updating flight status. Please pick a correct status' );
+          break;
 
-        setTimeout(() => {
-          this.notificationMessage = "";
-        }, 3000);
+        case "Other":
+          flight.status = this.newStatusInput;
+          this.clearMsg(true, 'Flight status updated');
+          break;
+
+        default:
+          flight.status = this.newStatus;
+          this.clearMsg(true,  'Flight status updated');
       }
+    },
+
+    clearMsg(validity, msg) {
+      this.isSuccessful = validity
+      this.notificationMsg = msg
+      setTimeout(() => {
+        this.notificationMsg = '';
+      }, 3000);
     },
   },
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+  .departed {
+    color: #D67B27;
+    background-color: #D67B27;
+  }
+  .departing {
+    color: #000000;
+    background-color: #F5D836;
+  }
+  .final {
+    color: #d8000c;
+    background-color: #d8000c;
+  }
+  .go-to-gate{
+    background-color: #3677F5;
+    color: #000000;
+  }
+
+  .wait-in-lounge{
+    background-color: pink;
+  }
+  .scheduled{
+    background-color: #1EA945;
+    color: #1EA945;
+  }
+  .extra{
+    background-color: pink;
+    color: #000000;
+  }
+
 .home-container {
   display: flex;
-  justify-content: center;
   flex-direction: column;
-  height: auto;
   background: linear-gradient(90deg, #464646 0%, #000000 100%);
   width: 90%;
   max-width: 1200px;
   margin: 4em auto;
   border-radius: 5px;
-
-  .header {
-    display: flex;
-    background: radial-gradient(
-      81.65% 10898.53% at 18.35% 50%,
-      #ffef97 0%,
-      #dfc42e 100%
-    );
-    padding: 20px 30px;
-    img {
-      margin-right: 30px;
-    }
-  }
 
   @keyframes skeleton-loading {
     0% {
@@ -329,6 +317,16 @@ export default {
       background-color: hsl(200, 20%, 95%);
     }
   }
+}
+
+  .header {
+  display: flex;
+  background: radial-gradient(81.65% 10898.53% at 18.35% 50%,#ffef97 0%,#dfc42e 100% );
+  padding: 20px 30px;
+  img {
+    margin-right: 30px;
+  }
+  }
 
   .depatures-container {
     padding: 10px 30px;
@@ -346,7 +344,6 @@ export default {
         padding: 25px 30px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
         margin-bottom: 25px;
       }
       .table-header {
@@ -359,7 +356,7 @@ export default {
         cursor: pointer;
         border: 2px solid #ffffff;
         box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
-        color: white;
+        color: #ffffff;
         text-align: left;
         font-weight: 700;
         [data-label="City Name"],
@@ -367,21 +364,20 @@ export default {
           color: #f5d836;
         }
         [data-label="Status"] {
-          background-color: white;
-          color: black;
+          background-color: #ffffff;
           display: flex;
           align-items: center;
           padding: 10px 10px 10px 15px;
           border-radius: 0 20px 20px 0;
           position: relative;
-          &:before {
-            content: "";
-            position: absolute;
-            width: 10px;
+          p{
+            background-color: #ffffff;
+          }
+          div {
+            width: 12px;
             height: 100%;
-            background-color: v-bind(statusColor);
+            position: absolute;
             left: 0;
-            border-radius: 0 -5px -5px 0;
           }
         }
         button {
@@ -394,21 +390,11 @@ export default {
           cursor: pointer;
         }
       }
-      .col-1 {
-        flex-basis: 17%;
-      }
-      .col-2 {
-        flex-basis: 17%;
-      }
-      .col-3 {
-        flex-basis: 17%;
-      }
-      .col-4 {
-        flex-basis: 17%;
-      }
-      .col-5 {
-        flex-basis: 17%;
-      }
+      .col-1,
+      .col-2, 
+      .col-3, 
+      .col-4, 
+      .col-5, 
       .col-6 {
         flex-basis: 17%;
       }
@@ -417,22 +403,16 @@ export default {
         .table-header {
           display: none;
         }
-        .table-row {
-        }
         li {
           display: block;
         }
+    
         .col {
-          flex-basis: 100%;
-        }
-        .col {
-          //  display: flex;
           padding: 10px 0;
           &:before {
-            color: #6c7a89;
+            color: white;
             padding-right: 10px;
             content: attr(data-label);
-            flex-basis: 50%;
             text-align: right;
           }
         }
@@ -440,27 +420,21 @@ export default {
     }
     .pagination {
       display: flex;
-      // align-items: center;
       justify-content: end;
       width: 100%;
-      // max-width: 400px;
-      @media all and (max-width: 767px) {
-      }
     }
   }
 
   .form-container {
-    // background-color: white;
     margin-top: 3em;
     padding: 20px 0px;
     h1,
     p {
       padding: 0 30px;
-      color: white;
+      color: #ffffff;
     }
     p {
-      // background-color: pink;
-      color: black;
+      color: #000000;
       font-weight: 700;
       width: 100%;
       max-width: 700px;
@@ -485,9 +459,18 @@ export default {
       padding: 5px;
       color: white;
     }
-    h4{
-      color: white;
+    input {
+      border: none;
+      border-bottom: 1px solid #dfc42e;
+      outline: none;
+      display: block;
+      background-color: transparent;
+      color: #ffffff;
+      margin-top: 10px;
+      padding: 5px;
+    }
+    .change-status {
+      color: #ffffff;
     }
   }
-}
 </style>
