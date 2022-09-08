@@ -7,7 +7,14 @@
 
     <section class="depatures-container">
       <ul class="responsive-table">
-        <table-header></table-header>
+        <li class="table-header">
+          <div class="col col-1">Departure Time</div>
+          <div class="col col-2">City Name</div>
+          <div class="col col-3">Code</div>
+          <div class="col col-4">Airline</div>
+          <div class="col col-5">Gate</div>
+          <div class="col col-6">Status</div>
+        </li>
 
         <p v-if="isErrorFetchingDeparture">Error Fetching departures</p>
         <template v-if="isLoading && departures.length === 0">
@@ -126,7 +133,7 @@
 
 <script>
 import SkeletonLoader from '@/components/SkeletonLoader.vue';
-import TableHeader from '@/components/TableHeader.vue';
+
 const customStyles = {
   ul: {
     display: "flex",
@@ -154,7 +161,7 @@ const customLabels = {
 export default {
   
   name: "HomePage",
-  components: { SkeletonLoader, TableHeader },
+  components: { SkeletonLoader },
   data() {
     return {
       departures: [],
