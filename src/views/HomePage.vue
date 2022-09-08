@@ -420,8 +420,11 @@ export default {
     }
     .pagination {
       display: flex;
-      justify-content: end;
+      justify-content: flex-end;
       width: 100%;
+      @media all and (max-width: 767px) {
+       justify-content: center;
+      }
     }
   }
 
